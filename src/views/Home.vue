@@ -1,18 +1,36 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <Container ref="container" />
 </template>
-
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+// import n from "./Nav";
+// import c from "./Container";
+import Container from "../components/Container";
 
 export default {
-  name: 'Home',
+  name: "app",
+  data() {
+    return {};
+  },
+
+  created() {},
+
+  computed: {
+    size() {
+      return "HEJ";
+    }
+  },
   components: {
-    HelloWorld
-  }
-}
+    Container
+  },
+  watch: {
+    textcolor() {
+      // console.log("TC CHANGED!");
+    }
+  },
+  methods: {},
+  props: {}
+};
 </script>
+<style>
+</style>
+
