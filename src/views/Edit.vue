@@ -11,7 +11,6 @@
       <input name="title" type="text" v-model="data.title" />
       <h1>Content</h1>
       <textarea name="content" type="text" v-model="data.content" />
-      <!-- <button v-on:click.stop="saveItem">&#128190;</button> -->
     </article>
   </section>
 </template>
@@ -30,8 +29,9 @@ export default {
   },
   methods: {
     saveItem() {
+      this.data.textcolor = this.$store.state.textcolor;
+      this.data.bgcolor = this.$store.state.bgcolor;
       this.$store.dispatch("updateNote", this.data);
-      this.$router.push("/");
     }
   },
   beforeMount() {
@@ -44,8 +44,6 @@ export default {
     this.data.id = tmp.id;
     this.$store.commit("updateTextColor", this.data.textcolor);
     this.$store.commit("updateBgColor", this.data.bgcolor);
-    // console.log("In created hook");
-    // console.log(this.data);
   },
   computed: {}
 };
@@ -55,5 +53,12 @@ export default {
   height: 100%;
   display: grid;
   grid-template-rows: 5vh 5vh 5vh auto;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+.header button {
+  font-size: 2rem;
 }
 </style>

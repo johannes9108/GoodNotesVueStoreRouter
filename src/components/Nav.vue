@@ -13,21 +13,7 @@
 </template>
 <script>
 export default {
-  data() {
-    return {
-      buttonKeys: {
-        view: "view",
-        new: "new",
-        edit: "edit",
-        textcolor: "textcolor",
-        bgcolor: "bgcolor"
-      }
-    };
-  },
   computed: {
-    test() {
-      return "test";
-    },
     textColor: {
       get: function() {
         return this.$store.state.textcolor;
@@ -45,8 +31,6 @@ export default {
       }
     }
   },
-  watch: {},
-  components: {},
   methods: {
     toggleListView() {
       this.$store.commit("toggleListView");

@@ -1,15 +1,12 @@
 <template>
   <div
-    v-if="isVisible"
     class="note"
-    v-bind:style="{color: this.post.textcolor, backgroundColor: this.post.bgcolor}"
+    v-bind:style="styleObject"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     :class="{ highlight: hover }"
   >
-    <!-- <h3 contenteditable>{{title}}</h3> -->
     <div class="header">
-      <!-- <input v-model="noteTitle" type="text" placeholder="New Title" @blur="updateNote" /> -->
       <span v-bind:key="noteId">{{this.post.title}}</span>
       <router-link :to="{name: 'Edit', params:{id: noteId}}">
         <button>&#128394;</button>
@@ -17,15 +14,12 @@
       <button v-on:click="removeItem">&#10005;</button>
     </div>
     <p v-bind:key="noteId">{{this.post.content}}</p>
-    <!-- <textarea v-model="noteContent" placeholder="New Content" @blur="updateNote"></textarea> -->
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      isVisible: true,
-      isExpanded: false,
       hover: false,
       noteTitle: this.post.title,
       noteContent: this.post.content,
@@ -39,8 +33,7 @@ export default {
   components: {},
   methods: {
     removeItem() {
-      console.log("Remove this note");
-      this.$store.commit("removeItem", this.noteId);
+      this.$store.dispatch("deleteItem", this.noteId);
     }
   },
   props: {

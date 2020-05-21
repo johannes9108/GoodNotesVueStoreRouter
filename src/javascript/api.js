@@ -41,15 +41,15 @@ export default class Api {
           "Content-Type": "application/json",
         },
       });
-      console.log("Promise: " + promise);
+      // console.log("Promise: " + promise);
 
       let response = await promise;
-      console.log("Response: " + response);
+      // console.log("Response: " + response);
 
       let data = await response.json();
 
-      console.log("Data: " + data);
-      console.log(data);
+      // console.log("Data: " + data);
+      // console.log(data);
       return data;
     } catch (error) {
       console.log("Corrupted Data");
@@ -69,15 +69,15 @@ export default class Api {
           "Content-Type": "application/json",
         },
       });
-      console.log("Promise: " + promise);
+      // console.log("Promise: " + promise);
 
       let response = await promise;
-      console.log("Response: " + response);
+      // console.log("Response: " + response);
 
       let data = await response.json();
 
-      console.log("Data: " + data);
-      console.log(data);
+      // console.log("Data: " + data);
+      // console.log(data);
       return data;
     } catch (error) {
       console.log("Corrupted Data");
@@ -85,21 +85,21 @@ export default class Api {
   }
 
   async delete(id) {
-    console.log(id);
-    console.log("Delete Single");
+    // console.log(id);
+    // console.log("Delete Single");
 
     try {
       let promise = fetch(this.url + "/" + id, {
         method: "DELETE",
       });
-      console.log("Promise: " + promise);
+      // console.log("Promise: " + promise);
 
       let response = await promise;
-      console.log("Response: " + response);
+      // console.log("Response: " + response);
 
       let data = await response.json();
 
-      console.log("Data: " + data);
+      // console.log("Data: " + data);
       return data;
     } catch (error) {
       console.log("Corrupted Data");

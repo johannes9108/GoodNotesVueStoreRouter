@@ -11,26 +11,17 @@ export default new Vuex.Store({
     textcolor: "#000000",
     bgcolor: "#FFFFFF",
     database: {},
+    loading: false,
     apiHandler: new Api("http://localhost:8081/notes"),
   },
   getters: {},
   mutations: {
+    setLoading(state, loading) {
+      state.loading = loading;
+    },
     removeItem(state, id) {
-      Vue.delete(state.database);
-      console.log(id);
       const deletePost = `post${id}`;
-      console.log("DeletP " + deletePost);
-
-      let res = state.apiHandler.delete(id);
-
-      Promise.resolve(res)
-        .then(() => {
-          console.log(
-            "The post with id " + id + " was deleted from the database"
-          );
-          Vue.delete(state.database, deletePost);
-        })
-        .catch("Couldn't delete the post with id " + id);
+      Vue.delete(state.database, deletePost);
     },
     toggleListView(state) {
       state.listView = !state.listView;
@@ -41,68 +32,79 @@ export default new Vuex.Store({
     updateBgColor(state, color) {
       state.bgcolor = color;
     },
-    async createNewNote(state) {
-      console.log(state.database);
-
-      const newNote = new Note("", "", "", state.textcolor, state.bgcolor);
-
-      let res = state.apiHandler.create(newNote);
+    createNewNote(state, data) {
+      const newPost = `post${data.id}`;
+      console.log("in final: ");
+      console.log(data);
+      Vue.set(
+        state.database,
+        newPost,
+        new Note(data.id, "", "", this.state.textcolor, this.state.bgcolor)
+      );
+      router.push({ name: "Edit", params: { id: data.id } });
+    },
+    // updateItem_Mutation(state, payload) {},
+    setItemInDatabase(state, posts) {
+      for (let item of posts) {
+        const newPost = `post${item.id}`;
+        const newNote = new Note(
+          item.id,
+          item.title,
+          item.content,
+          item.textcolor,
+          item.bgcolor
+        );
+        Vue.set(state.database, newPost, newNote);
+      }
+    },
+  },
+  actions: {
+    async createNewNote(context) {
+      context.commit("setLoading", true);
+      const newNote = new Note();
+      let res = this.state.apiHandler.create(newNote);
 
       Promise.resolve(res)
         .then((data) => {
-          console.log("The post was created!");
-          // console.log(data);
-          const newPost = `post${data.id}`;
-          // console.log("DataID: " + data.id);
-          newNote.id = data.id;
-          Vue.set(state.database, newPost, newNote);
-          router.push({ name: "Edit", params: { id: data.id } });
+          context.commit("createNewNote", data);
+          context.commit("setLoading", false);
         })
         .catch("Couldn't created the post! ");
     },
-    async updateItem_Mutation(state, payload) {
-      let response = state.apiHandler.update(payload);
+    async getAll(context) {
+      context.commit("setLoading", true);
+      let response = this.state.apiHandler.getAll();
+
+      Promise.resolve(response)
+        .then((posts) => {
+          context.commit("setItemInDatabase", posts);
+          context.commit("setLoading", false);
+        })
+        .catch(() => console.log("Failed DATA in MAIN"));
+    },
+    async updateNote({ commit }, payload) {
+      commit("setLoading", true);
+      console.log(payload);
+      let response = this.state.apiHandler.update(payload);
 
       Promise.resolve(response)
         .then(() => {
           console.log("Successful update!");
+          router.push("/");
         })
-        .catch(() => console.log("Failed DATA in MAIN"));
+        .catch(() => console.log("Failed to update the data"));
     },
-    async getAll_Mutation(state) {
-      let response = state.apiHandler.getAll();
 
-      Promise.resolve(response)
-        .then((posts) => {
-          // console.log("Got data in MAIN");
-          // console.log(posts);
-
-          for (let item of posts) {
-            const newPost = `post${item.id}`;
-            const newNote = new Note(
-              item.id,
-              item.title,
-              item.content,
-              item.textcolor,
-              item.bgcolor
-            );
-            Vue.set(state.database, newPost, newNote);
-          }
-          // console.log(state.database);
-          // console.log("Created");
+    async deleteItem({ commit }, id) {
+      let res = this.state.apiHandler.delete(id);
+      Promise.resolve(res)
+        .then(() => {
+          console.log(
+            "The post with id " + id + " was deleted from the database"
+          );
+          commit("removeItem", id);
         })
-        .catch(() => console.log("Failed DATA in MAIN"));
-    },
-  },
-  actions: {
-    createNewNote(context) {
-      context.commit("createNewNote");
-    },
-    getAll(context) {
-      context.commit("getAll_Mutation");
-    },
-    updateNote({ commit }, payload) {
-      commit("updateItem_Mutation", payload);
+        .catch("Couldn't delete the post with id " + id);
     },
   },
   modules: {},
